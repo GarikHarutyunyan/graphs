@@ -1,29 +1,30 @@
 class Graph {
-    nodes = new Set();
-    edges = new Map();
+    nodes: Set<string> = new Set();
+    edges: Map<string, string[]> = new Map();
 
-    #addNode = (nodeData) => {
+    #addNode = (nodeData:string) => {
         this.nodes.add(nodeData);
         this.edges.set(nodeData, [])
     }
 
-    #addEdge = ([source, destination]) => {
-        this.edges.get(source).push(destination);
-        this.edges.get(destination).push(source);
+    #addEdge = ([source, destination]: [string, string]) => {
+        this.edges.get(source)?.push(destination);
+        this.edges.get(destination)?.push(source);
     }
 
-    constructor(nodesData, edgesData){
+    constructor(nodesData: string[], edgesData: [string, string][]){
         nodesData.forEach(this.#addNode);
         edgesData.forEach(this.#addEdge);
     }
 
-    bfs = (start, end) => {
-        const queue = [start];
-        const visitedNodes = new Set(start);
+    bfs = (start: string, end: string) => {
+        const queue: string[] = [start];
+        const visitedNodes: Set<string> = new Set(start);
         
         while(queue.length){
-            const node = queue.shift();
-            const nodeEdges = this.edges.get(node);
+            const node: string = queue[0];
+            queue.shift();
+            const nodeEdges: string[] = this.edges.get(node) || [];
 
             for(const nodeEdge of nodeEdges){
                 if(nodeEdge === end){
@@ -40,10 +41,10 @@ class Graph {
         }
     }
 
-    dfs = (start, end, visitedNodes = new Set(), isFound = false) => {
+    dfs = (start: string, end: string, visitedNodes: Set<string> = new Set()) => {
         visitedNodes.add(start);
 
-        const nodeEdges = this.edges.get(start);
+        const nodeEdges: string[] = this.edges.get(start) || [];
 
         for(const nodeEdge of nodeEdges){
             if(nodeEdge === end){
@@ -53,15 +54,15 @@ class Graph {
 
             if(!visitedNodes.has(nodeEdge)){
                 console.log(`${nodeEdge} is Visited.`)
-                this.dfs(nodeEdge, end, visitedNodes, isFound);
+                this.dfs(nodeEdge, end, visitedNodes);
             }
         };
     }
 
 }
 
-const nodesData = ['A', 'B', 'C', 'D', 'E','F', 'G', 'H', 'I'];
-const edgesData = [
+const nodesData: string[] = ['A', 'B', 'C', 'D', 'E','F', 'G', 'H', 'I'];
+const edgesData: [string, string][] = [
     ['A','B'],
     ['A','C'],
     ['A','D'],
